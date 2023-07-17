@@ -35,13 +35,6 @@ func (b *Bot) getUpdatesChan() tgbotapi.UpdatesChannel {
 
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
-		if update.Message != nil { // If we got a message
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "lalala")
-			msg.ReplyToMessageID = update.Message.MessageID
-
-			b.tg.Send(msg)
-		}
+		b.handleMessage(*update.Message)
 	}
 }
