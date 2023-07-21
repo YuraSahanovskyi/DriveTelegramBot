@@ -41,7 +41,7 @@ func (auth *AuthServer) Start() error {
 			log.Println("cannot read code")
 			return
 		}
-		if err := auth.repo.Put(database.Code, userID, code); err != nil {
+		if err := auth.repo.Put(database.Code, userID, []byte(code)); err != nil {
 			log.Printf("cannot save code for user ID %v\n", userID)
 			return
 		}

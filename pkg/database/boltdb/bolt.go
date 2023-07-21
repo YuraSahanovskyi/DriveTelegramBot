@@ -12,8 +12,8 @@ type BoltRepository struct {
 	db *bolt.DB
 }
 
-func (br *BoltRepository) Get(bucket database.Bucket, id int64) (string, error) {
-	var value string
+func (br *BoltRepository) Get(bucket database.Bucket, id int64) ([]byte, error) {
+	var value []byte
 	err := br.db.View(func(tx *bolt.Tx) error {
 		//get bucket or create it
 		b := tx.Bucket([]byte(bucket))
@@ -21,21 +21,19 @@ func (br *BoltRepository) Get(bucket database.Bucket, id int64) (string, error) 
 			return errors.New("bucket not found")
 		}
 		//get value by id
-		byteValue := b.Get(int64ToBytes(id))
-		if byteValue == nil {
+		value := b.Get(int64ToBytes(id))
+		if value == nil {
 			return errors.New("no such value")
 		}
-		//convert value to string
-		value = string(byteValue)
 		return nil
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return value, nil
 }
 
-func (br *BoltRepository) Put(bucket database.Bucket, id int64, value string) error {
+func (br *BoltRepository) Put(bucket database.Bucket, id int64, value []byte) error {
 	return br.db.Update(func(tx *bolt.Tx) error {
 		//get bucket or create it
 		b, err := tx.CreateBucketIfNotExists([]byte(bucket))
@@ -43,7 +41,7 @@ func (br *BoltRepository) Put(bucket database.Bucket, id int64, value string) er
 			return err
 		}
 		//put value by id
-		return b.Put(int64ToBytes(id), []byte(value))
+		return b.Put(int64ToBytes(id), value)
 	})
 }
 

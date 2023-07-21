@@ -8,7 +8,7 @@ const (
 )
 
 type Repository interface {
-	Get(bucket Bucket, id int64) (string, error)
-	Put(bucket Bucket, id int64, value string) error
+	Get(bucket Bucket, id int64) ([]byte, error)
+	Put(bucket Bucket, id int64, value []byte) error
 	Delete(bucket Bucket, id int64) error
 }

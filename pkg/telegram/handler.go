@@ -49,19 +49,19 @@ func (b *Bot) handleConfirm(id int64) {
 		b.tg.Send(msg)
 		return
 	}
-	token, err := b.drive.ExchangeCode(code)
+	token, err := b.drive.ExchangeCode(string(code))
 	if err != nil {
 		msg := tgbotapi.NewMessage(id, "oops, cannot exchange your token, try again later")
 		b.tg.Send(msg)
 		return
 	}
-	tok, err := json.Marshal(token)
+	tokenBytes, err := json.Marshal(token)
 	if err != nil {
 		msg := tgbotapi.NewMessage(id, "cannot marshal token, try again later")
 		b.tg.Send(msg)
 		return
 	}
-	if err := b.repo.Put(database.Token, id, string(tok)); err != nil {
+	if err := b.repo.Put(database.Token, id, tokenBytes); err != nil {
 		msg := tgbotapi.NewMessage(id, "cannot save token to database")
 		b.tg.Send(msg)
 		return
