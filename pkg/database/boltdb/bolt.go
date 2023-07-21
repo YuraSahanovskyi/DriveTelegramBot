@@ -16,9 +16,9 @@ func (br *BoltRepository) Get(bucket database.Bucket, id int64) (string, error) 
 	var value string
 	err := br.db.View(func(tx *bolt.Tx) error {
 		//get bucket or create it
-		b, err := tx.CreateBucketIfNotExists([]byte(bucket))
-		if err != nil {
-			return err
+		b := tx.Bucket([]byte(bucket))
+		if b == nil {
+			return errors.New("bucket not found")
 		}
 		//get value by id
 		byteValue := b.Get(int64ToBytes(id))
@@ -44,6 +44,18 @@ func (br *BoltRepository) Put(bucket database.Bucket, id int64, value string) er
 		}
 		//put value by id
 		return b.Put(int64ToBytes(id), []byte(value))
+	})
+}
+
+func (br *BoltRepository) Delete(bucket database.Bucket, id int64) error {
+	return br.db.Update(func(tx *bolt.Tx) error {
+		//get bucket or create it
+		b, err := tx.CreateBucketIfNotExists([]byte(bucket))
+		if err != nil {
+			return err
+		}
+		//delete value by id
+		return b.Delete(int64ToBytes(id))
 	})
 }
 
