@@ -45,28 +45,24 @@ func (b *Bot) handleStart(id int64) {
 func (b *Bot) handleConfirm(id int64) {
 	code, err := b.repo.Get(database.Code, id)
 	if err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("read code error: %v", err))
+		msg := tgbotapi.NewMessage(id, "cannot fin your code in database, try to auth again")
 		b.tg.Send(msg)
 		return
 	}
 	token, err := b.drive.ExchangeCode(code)
 	if err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("exchange token error: %v", err))
+		msg := tgbotapi.NewMessage(id, "oops, cannot exchange your token, try again later")
 		b.tg.Send(msg)
 		return
 	}
 	tok, err := json.Marshal(token)
 	if err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("marshal token error: %v", err))
+		msg := tgbotapi.NewMessage(id, "cannot marshal token, try again later")
 		b.tg.Send(msg)
 		return
 	}
 	if err := b.repo.Put(database.Token, id, string(tok)); err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("write token error: %v", err))
+		msg := tgbotapi.NewMessage(id, "cannot save token to database")
 		b.tg.Send(msg)
 		return
 	}
@@ -76,14 +72,12 @@ func (b *Bot) handleConfirm(id int64) {
 
 func (b *Bot) handleLogOut(id int64) {
 	if err := b.repo.Delete(database.Code, id); err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("error: %v", err))
+		msg := tgbotapi.NewMessage(id, "something went wrong, try again")
 		b.tg.Send(msg)
 		return
 	}
 	if err := b.repo.Delete(database.Token, id); err != nil {
-		//TODO: error
-		msg := tgbotapi.NewMessage(id, fmt.Sprintf("error: %v", err))
+		msg := tgbotapi.NewMessage(id, "something went wrong, try again")
 		b.tg.Send(msg)
 		return
 	}
@@ -92,5 +86,5 @@ func (b *Bot) handleLogOut(id int64) {
 }
 
 func (b *Bot) handleFile(msg tgbotapi.Message) {
-	//TODO: implement
+
 }
