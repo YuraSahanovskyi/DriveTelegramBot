@@ -3,9 +3,11 @@ package telegram
 import (
 	"encoding/json"
 	"fmt"
+	"go/token"
 
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/database"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"golang.org/x/oauth2"
 )
 
 const (
