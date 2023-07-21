@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/auth"
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/database/boltdb"
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/gdrive"
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/telegram"
@@ -46,5 +47,10 @@ func main() {
 	}
 	//create bot
 	bot := telegram.NewBot(tg, drive, db)
-	bot.Start()
+	go bot.Start()
+	//create auth server
+	authServer := auth.NewAuthServer(db)
+	if err := authServer.Start(); err != nil {
+		log.Fatal(err)
+	}
 }
