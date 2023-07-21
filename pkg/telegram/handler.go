@@ -68,14 +68,10 @@ func (b *Bot) handleConfirm(id int64) {
 	}
 	msg := tgbotapi.NewMessage(id, "Authorization successful")
 	b.tg.Send(msg)
+	b.repo.Delete(database.Code, id)
 }
 
 func (b *Bot) handleLogOut(id int64) {
-	if err := b.repo.Delete(database.Code, id); err != nil {
-		msg := tgbotapi.NewMessage(id, "something went wrong, try again")
-		b.tg.Send(msg)
-		return
-	}
 	if err := b.repo.Delete(database.Token, id); err != nil {
 		msg := tgbotapi.NewMessage(id, "something went wrong, try again")
 		b.tg.Send(msg)
