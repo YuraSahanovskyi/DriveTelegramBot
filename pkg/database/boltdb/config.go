@@ -8,7 +8,7 @@ import (
 )
 
 func InitDB() (*BoltRepository, error) {
-	dbName := viper.GetString("DB_NAME")
+	dbName := viper.GetString("db_name")
 	if dbName == "" {
 		return nil, errors.New("can't read database name")
 	}

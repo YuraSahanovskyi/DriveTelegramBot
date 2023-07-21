@@ -17,6 +17,13 @@ func initViper() {
 		log.Fatalf("Failed to load .env file: %v", err)
 	}
 	viper.AutomaticEnv()
+
+	viper.SetConfigName("main")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./config")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Failed to read main.yml config file: %v", err)
+	}
 }
 
 func main() {
