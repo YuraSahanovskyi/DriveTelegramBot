@@ -21,10 +21,12 @@ func (br *BoltRepository) Get(bucket database.Bucket, id int64) ([]byte, error) 
 			return errors.New("bucket not found")
 		}
 		//get value by id
-		value := b.Get(int64ToBytes(id))
-		if value == nil {
+		byteValue := b.Get(int64ToBytes(id))
+		if byteValue == nil {
 			return errors.New("no such value")
 		}
+		value = make([]byte, len(byteValue))
+		copy(value, byteValue)
 		return nil
 	})
 	if err != nil {
