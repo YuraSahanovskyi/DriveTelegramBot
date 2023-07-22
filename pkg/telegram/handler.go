@@ -3,11 +3,11 @@ package telegram
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"net/http"
 
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/database"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"golang.org/x/oauth2"
+	"google.golang.org/api/drive/v3"
 )
 
 const (
@@ -102,21 +102,39 @@ func (b *Bot) handleLogOut(id int64) {
 }
 
 func (b *Bot) handleFile(msg tgbotapi.Message) {
-
-}
-
-func (b *Bot) checkAuth(id int64) bool {
-	tokenBytes, err := b.repo.Get(database.Token, id)
+	if !b.checkAuth(msg.Chat.ID) {
+		msg := tgbotapi.NewMessage(msg.Chat.ID, "You are not authenticated, tap /start")
+		b.tg.Send(msg)
+		return
+	}
+	token := b.getAuth(msg.Chat.ID)
+	if token == nil {
+		return
+	}
+	fileID := msg.Document.FileID
+	tgFile, err := b.tg.GetFile(tgbotapi.FileConfig{FileID: fileID})
 	if err != nil {
-		return false
+		msg := tgbotapi.NewMessage(msg.Chat.ID, "cannot get file "+err.Error())
+		b.tg.Send(msg)
+		return
 	}
-	var token oauth2.Token
-	if err := json.Unmarshal(tokenBytes, &token); err != nil {
-		log.Printf("Error unmarshalling token: %v", err)
-		return false
+	link := tgFile.Link(b.tg.Token)
+	resp, err := http.Get(link)
+	if err != nil {
+		msg := tgbotapi.NewMessage(msg.Chat.ID, "cannot download file "+err.Error())
+		b.tg.Send(msg)
+		return
 	}
-	if !token.Valid() {
-		return false
+	defer resp.Body.Close()
+	file := &drive.File{
+		Name:     msg.Document.FileName,
+		MimeType: msg.Document.MimeType,
 	}
-	return true
+	if err := b.drive.UploadFile(token, file, resp.Body); err != nil {
+		msg := tgbotapi.NewMessage(msg.Chat.ID, "cannot upload file "+err.Error())
+		b.tg.Send(msg)
+		return
+	}
+	response := tgbotapi.NewMessage(msg.Chat.ID, "File uploaded")
+	b.tg.Send(response)
 }

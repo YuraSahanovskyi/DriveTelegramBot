@@ -2,10 +2,13 @@ package gdrive
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"strconv"
 
 	"golang.org/x/oauth2"
+	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/option"
 )
 
 type Drive struct {
@@ -31,4 +34,15 @@ func (d *Drive) ExchangeCode(code string) (*oauth2.Token, error) {
 // returns authorization url for user
 func (d *Drive) GetAuthUrl(userID int64) string {
 	return d.config.AuthCodeURL(strconv.FormatInt(userID, 10), oauth2.AccessTypeOnline)
+}
+
+func (d *Drive) UploadFile(token *oauth2.Token, file *drive.File, r io.Reader) error {
+	client := d.GetClient(token)
+	//create new service
+	srv, err := drive.NewService(context.Background(), option.WithHTTPClient(client))
+	if err != nil {
+		return err
+	}
+	_, err = srv.Files.Create(file).Media(r).Do()
+	return err
 }
