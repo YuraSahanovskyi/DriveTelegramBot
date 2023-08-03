@@ -52,9 +52,17 @@ func main() {
 	if err != nil {
 		log.Fatal("Drive don't created: ", err)
 	}
+
+	//load messages
+	msgs, err := telegram.InitMessages()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	//create bot
-	bot := telegram.NewBot(tg, drive, db)
+	bot := telegram.NewBot(tg, drive, db, msgs)
 	go bot.Start()
+
 	//create auth server
 	authServer := auth.NewAuthServer(db)
 	if err := authServer.Start(); err != nil {

@@ -12,10 +12,11 @@ type Bot struct {
 	tg    *tgbotapi.BotAPI
 	drive *gdrive.Drive
 	repo  database.Repository
+	msgs  *Messages
 }
 
-func NewBot(tg *tgbotapi.BotAPI, drive *gdrive.Drive, repo database.Repository) *Bot {
-	return &Bot{tg: tg, drive: drive, repo: repo}
+func NewBot(tg *tgbotapi.BotAPI, drive *gdrive.Drive, repo database.Repository, msgs *Messages) *Bot {
+	return &Bot{tg: tg, drive: drive, repo: repo, msgs: msgs}
 }
 
 func (b *Bot) Start() {

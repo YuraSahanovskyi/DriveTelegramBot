@@ -5,3 +5,24 @@ redirect_url: "http://localhost:8080"
 
 #db
 db_name: "bot.db"
+
+#messages
+messages:
+  auth:
+    no_token_in_db: "Cannot find your token in database, try to auth again"
+    no_code_in_db: "Cannot find your code in database, try to auth again"
+    already_authenticated: "You are already authenticated"
+    auth_link: "Follow auth link \n%v \nand then call \"/confirm\" command"
+    cannot_exchange_token: "Oops, cannot exchange your token, try again later"
+    cannot_marshal_token: "Cannot marshal token, try again later"
+    cannot_save_token: "Cannot save token to database"
+    successful_in: "Authentication successful"
+    successful_out: "Logout successful"
+    something_wrong: "Something went wrong, try again"
+    not_authenticated: "You are not authenticated, tap /start"
+  file:
+    no_files_to_save: "No files to save"
+    file_error: "File %s: %v"
+    file_success: "File %s uploaded"
+  command:
+    unknown: "I don't understand that command"
