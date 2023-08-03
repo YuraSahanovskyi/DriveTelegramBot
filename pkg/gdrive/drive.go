@@ -43,6 +43,13 @@ func (d *Drive) UploadFile(token *oauth2.Token, file *drive.File, r io.Reader) e
 	if err != nil {
 		return err
 	}
+	//create folder for files
+	parentDirID, err := getDirID(srv)
+	if err != nil {
+		return err
+	}
+	file.Parents = append(file.Parents, parentDirID)
+	//upload the file
 	_, err = srv.Files.Create(file).Media(r).Do()
 	return err
 }
