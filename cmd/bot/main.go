@@ -8,14 +8,10 @@ import (
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/gdrive"
 	"github.com/YuraSahanovskyi/DriveTelegramBot/pkg/telegram"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	env "github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
 func initViper() {
-	if err := env.Load(); err != nil {
-		log.Fatalf("Failed to load .env file: %v", err)
-	}
 	viper.AutomaticEnv()
 
 	viper.SetConfigName("main")

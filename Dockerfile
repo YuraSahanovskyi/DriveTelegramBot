@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY --from=build-stage /bot-bin ./bot-bin
 COPY ./config ./config
-COPY .env .
+
 
 EXPOSE 8080
 
