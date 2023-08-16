@@ -1,7 +1,6 @@
 #auth server
 bot_link: "https://t.me/gdriveclientbot"
 server_port: ":8080"
-redirect_url: "http://localhost:8080"
 
 #db
 db_name: "bot.db"
